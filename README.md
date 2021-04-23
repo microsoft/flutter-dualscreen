@@ -1,14 +1,43 @@
-# Project
+# Flutter Dual Screen
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+This contains Microsoft's offerings to streamline dual-screen and foldable development using Flutter. The plugin will work on any platform, but only Android actually has dual screen and foldable devices.
 
-As the maintainer of this project, please make a few updates:
+Flutter already has support for foldable and dual-screen devices in the form of [MediaQuery Display Features](https://docs.microsoft.com/en-us/dual-screen/flutter/mediaquery) and the [TwoPane widget](https://docs.microsoft.com/en-us/dual-screen/flutter/twopane-widget). It does not provide a way to access the hinge angle sensor data.
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+# Hinge angle sensor
+
+Foldable and dual-screen devices have a hinge between the two moving parts of the screen. This hinge has a sensor, reporting the angle between the parts of the screen. For example, when these parts lay flat to form a continuous surface, the hinge angle reports a 180 deg angle.
+
+> The hinge angle is used to determine the [device posture](https://developer.android.com/guide/topics/ui/foldables#postures). If you're looking to write code that depends on the device posture, we recommend using the functionality provided by [MediaQuery Display Features](https://docs.microsoft.com/en-us/dual-screen/flutter/mediaquery) instead.
+
+## Usage
+
+To use this plugin, add sensors as a dependency in your pubspec.yaml file.
+
+This will allow you to import DualScreenInfo `import 'package:dual_screen/dual_screen.dart';`
+
+DualScreenInfo exposes 2 static properties:
+
+- `hingeAngleEvents`: Broadcast stream of events from the device hinge angle sensor. If the device is not equipped with a hinge angle sensor, the stream produces no events.
+- `hasHingeAngleSensor`: Future returning true if the device has a hinge angle sensor. Alternatively, if your app already uses `MediaQuery.displayFeatures` or `MediaQuery.hinge` to adapt to foldable or dual-screen form factors, you can safely assume the hinge angle sensor exists and that `hingeAngleEvents` produces usable values.
+
+```dart
+import 'package:dual_screen/dual_screen_info.dart';
+
+DualScreenInfo.hingeAngleEvents.listen((double hingeAngle) {
+  print(hingeAngle);
+});
+
+DualScreenInfo.hasHingeAngleSensor.then((bool hasHingeSensor) {
+  print(hasHingeSensor);
+});
+```
+
+## Testing
+
+If you want to test the hinge angle sensor functionality and don't have a foldable or dual-screen device, you can either use the [Surface Duo emulator](https://docs.microsoft.com/en-us/dual-screen/android/emulator/get-started) or one of the [foldable emulators available in Android Studio](https://developer.android.com/guide/topics/ui/foldables#emulators). Both emulators provide a hinge angle virtual sensor:
+
+![Android Emulator Hinge Sensor](images/emulator_hinge_angle.png)
 
 ## Contributing
 
