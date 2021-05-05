@@ -24,18 +24,21 @@ class DualScreenInfo {
             .map((event) => event as double);
       }
       return _hingeAngleEvents!;
-    } catch (MissingPluginException) {
+    } catch (e) {
       return Stream.empty();
     }
   }
 
   /// Returns true if the device has a hinge angle sensor.
+  ///
+  /// Returns false if the platform is not supported or if the device does not
+  /// have a hinge or hinge angle sensor.
   static Future<bool> get hasHingeAngleSensor async {
     try {
       return await _hingeInfoMethodChannel
-          .invokeMethod<bool>('hasHingeAngleSensor') ??
+              .invokeMethod<bool>('hasHingeAngleSensor') ??
           false;
-    } catch (MissingPluginException) {
+    } catch (e) {
       return false;
     }
   }

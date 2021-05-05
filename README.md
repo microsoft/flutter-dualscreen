@@ -12,7 +12,7 @@ Foldable and dual-screen devices have a hinge between the two moving parts of th
 
 ## Usage
 
-To use this plugin, add sensors as a dependency in your pubspec.yaml file.
+To use this plugin, add `dual_screen` as a dependency in your pubspec.yaml file.
 
 This will allow you to import DualScreenInfo `import 'package:dual_screen/dual_screen.dart';`
 
