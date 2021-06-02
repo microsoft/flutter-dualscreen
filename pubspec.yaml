@@ -1,6 +1,6 @@
 name: dual_screen
 description: Dual-screen and foldable support, like hinge angle sensor data.
-version: 1.0.0
+version: 1.0.0+1
 homepage: https://docs.microsoft.com/en-us/dual-screen/
 repository: https://github.com/microsoft/flutter-dualscreen
 
