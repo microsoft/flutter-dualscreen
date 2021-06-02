@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
               StreamBuilder<double>(
                 stream: DualScreenInfo.hingeAngleEvents,
                 builder: (context, hingeAngle) {
-                  return Text('Hinge angle is: ${hingeAngle.data}');
+                  return Text('Hinge angle is: ${hingeAngle.data?.toStringAsFixed(2)}');
                 },
               ),
             ],

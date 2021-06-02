@@ -35,9 +35,9 @@ DualScreenInfo.hasHingeAngleSensor.then((bool hasHingeSensor) {
 
 ## Testing
 
-If you want to test the hinge angle sensor functionality and don't have a foldable or dual-screen device, you can either use the [Surface Duo emulator](https://docs.microsoft.com/en-us/dual-screen/android/emulator/get-started) or one of the [foldable emulators available in Android Studio](https://developer.android.com/guide/topics/ui/foldables#emulators). Both emulators provide a hinge angle virtual sensor:
+If you want to test the hinge angle sensor functionality you can either use the [Surface Duo emulator](https://docs.microsoft.com/en-us/dual-screen/android/emulator/get-started) or one of the [foldable emulators available in Android Studio](https://developer.android.com/guide/topics/ui/foldables#emulators). Both emulators provide a hinge angle virtual sensor. The Surface Duo emulator is the only one with two separate screens.
 
-![Android Emulator Hinge Sensor](images/emulator_hinge_angle.png)
+![Surface Duo Emulator Hinge Sensor](https://github.com/microsoft/flutter-dualscreen/blob/main/images/emulator_hinge_angle.jpg)
 
 ## Contributing
 
@@ -60,3 +60,7 @@ trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
+
+## Special thanks
+
+This package was previously owned by [Built to Roam](https://pub.dev/publishers/builttoroam.com/) and it initially offered a way to know if your app is running on a dual screen device and if it is spanned across both screens or not. We would like to thank [Nick Randolph](https://github.com/nickrandolph), [Michale Bui](https://github.com/MaikuB) and [Brett Lim](https://github.com/Brett09) for transferring ownership of `dual_screen` to Microsoft.

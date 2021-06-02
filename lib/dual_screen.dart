@@ -19,9 +19,11 @@ class DualScreenInfo {
   static Stream<double> get hingeAngleEvents {
     try {
       if (_hingeAngleEvents == null) {
-        _hingeAngleEvents = _hingeAngleEventChannel
-            .receiveBroadcastStream()
-            .map((event) => event as double);
+        _hingeAngleEvents = _repeatLatest(
+          _hingeAngleEventChannel
+              .receiveBroadcastStream()
+              .map((event) => event as double),
+        );
       }
       return _hingeAngleEvents!;
     } catch (e) {
@@ -41,5 +43,35 @@ class DualScreenInfo {
     } catch (e) {
       return false;
     }
+  }
+
+  static Stream<T> _repeatLatest<T>(Stream<T> original) {
+    var done = false;
+    T? latest = null;
+    var currentListeners = <MultiStreamController<T>>{};
+    original.listen((event) {
+      latest = event;
+      for (var listener in [...currentListeners]) listener.addSync(event);
+    }, onError: (Object error, StackTrace stack) {
+      for (var listener in [...currentListeners])
+        listener.addErrorSync(error, stack);
+    }, onDone: () {
+      done = true;
+      latest = null;
+      for (var listener in currentListeners) listener.closeSync();
+      currentListeners.clear();
+    });
+    return Stream.multi((controller) {
+      if (done) {
+        controller.close();
+        return;
+      }
+      currentListeners.add(controller);
+      var latestValue = latest;
+      if (latestValue != null) controller.add(latestValue);
+      controller.onCancel = () {
+        currentListeners.remove(controller);
+      };
+    });
   }
 }
