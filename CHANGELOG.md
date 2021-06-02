@@ -1,3 +1,8 @@
+## 1.0.0+2
+
+* `DualScreenInfo.hingeAngleEvents` now caches the last value
+* Updated Readme
+
 ## 1.0.0
 
 * `DualScreenInfo.hingeAngleEvents`: Broadcast stream of events from the device hinge angle sensor
