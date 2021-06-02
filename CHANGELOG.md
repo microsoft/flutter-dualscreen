@@ -1,3 +1,7 @@
+## 1.0.0+3
+
+* Updated Readme
+
 ## 1.0.0+2
 
 * `DualScreenInfo.hingeAngleEvents` now caches the last value
