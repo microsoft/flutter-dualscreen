@@ -22,7 +22,7 @@ DualScreenInfo exposes 2 static properties:
 - `hasHingeAngleSensor`: Future returning true if the device has a hinge angle sensor. Alternatively, if your app already uses `MediaQuery.displayFeatures` or `MediaQuery.hinge` to adapt to foldable or dual-screen form factors, you can safely assume the hinge angle sensor exists and that `hingeAngleEvents` produces usable values.
 
 ```dart
-import 'package:dual_screen/dual_screen_info.dart';
+import 'package:dual_screen/dual_screen.dart';
 
 DualScreenInfo.hingeAngleEvents.listen((double hingeAngle) {
   print(hingeAngle);
