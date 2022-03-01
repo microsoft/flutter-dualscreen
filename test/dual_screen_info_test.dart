@@ -15,7 +15,7 @@ void main() {
 
   tearDown(() {
     hingeInfoChannel.setMockMethodCallHandler(null);
-    ServicesBinding.instance!.defaultBinaryMessenger
+    ServicesBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler(hingeAngleChannel.name, null);
   });
 
@@ -56,7 +56,7 @@ void main() {
 
   test('hingeAngleEvents streams does not stream values on unsupported platforms',
       () async {
-        ServicesBinding.instance!.defaultBinaryMessenger
+        ServicesBinding.instance.defaultBinaryMessenger
             .setMockMessageHandler(hingeAngleChannel.name, null);
 
     expect(await DualScreenInfo.hingeAngleEvents.isEmpty, true);
@@ -67,18 +67,18 @@ void _mockSensorStream(
     String channelName, List<double> multipleSensorValues) {
   const StandardMethodCodec standardMethod = StandardMethodCodec();
 
-  ServicesBinding.instance!.defaultBinaryMessenger
+  ServicesBinding.instance.defaultBinaryMessenger
       .setMockMessageHandler(channelName, (ByteData? message) async {
     final MethodCall methodCall = standardMethod.decodeMethodCall(message);
     if (methodCall.method == 'listen') {
       multipleSensorValues.forEach((element) {
-        ServicesBinding.instance!.defaultBinaryMessenger.handlePlatformMessage(
+        ServicesBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
           channelName,
           standardMethod.encodeSuccessEnvelope(element),
           (ByteData? reply) {},
         );
       });
-      ServicesBinding.instance!.defaultBinaryMessenger.handlePlatformMessage(
+      ServicesBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
         channelName,
         null,
         (ByteData? reply) {},
