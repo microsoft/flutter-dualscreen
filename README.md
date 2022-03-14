@@ -1,8 +1,67 @@
 # Flutter Dual Screen
 
-This contains Microsoft's offerings to streamline dual-screen and foldable development using Flutter. The plugin will work on any platform, but only Android actually has dual screen and foldable devices.
+This contains Microsoft's offerings to streamline foldable and dual-screen development using Flutter. This plugin will work on any platform, but only Android actually has foldable and dual screen devices.
 
-Flutter already has support for foldable and dual-screen devices in the form of [MediaQuery Display Features](https://docs.microsoft.com/en-us/dual-screen/flutter/mediaquery) and the [TwoPane widget](https://docs.microsoft.com/en-us/dual-screen/flutter/twopane-widget). It does not provide a way to access the hinge angle sensor data.
+Flutter already has support for foldable and dual-screen devices in the form of [MediaQuery Display Features](https://docs.microsoft.com/en-us/dual-screen/flutter/mediaquery). In addition to that, this plugin offers:
+
+- The [TwoPane widget](#twopane-widget), which relies on display features coming from MediaQuery.
+- Access to the [hinge angle sensor data](#hinge-angle-sensor), which for performance concerns, was not included in MediaQuery.
+
+# TwoPane Widget
+
+This layout has two child panes, which can be shown side-by-side, above-and-below, or a single pane can be prioritized. The relative size of the two pane widgets can be adjusted proportionally; and on dual-screen devices the boundary snaps to the hinge area.
+
+## TwoPane API
+
+```dart
+class TwoPane {
+  const TwoPane({
+    Widget startPane,
+    Widget endPane,
+    double paneProportion,
+    TwoPanePriority panePriority,
+    Axis direction,
+    TextDirection? textDirection,
+    VerticalDirection verticalDirection,
+    EdgeInsets padding,
+  });
+}
+```
+
+Properties of TwoPane:
+
+- `startPane` - Start pane, which can sit on the left for left-to-right layouts, or at the top for top-to-bottom layouts. If `panePriority` is `start` and there is no hinge, this is the only visible pane.
+- `endPane` - End pane, which can sit on the right for left-to-right layouts, or at the bottom for top-to-bottom layouts. If `panePriority` is `end`, and there is no hinge, this is the only visible pane.
+- `paneProportion` - Proportion of the screen occupied by the start pane. The end pane takes over the rest of the space. A value of 0.5 will make the two panes equal. This property is ignored for displays with a hinge, in which case each pane takes over one screen.
+- `panePriority` - Whether to show only one the start pane, end pane, or both. This property is ignored for displays with a hinge, in which case `both` panes are visible.
+- `direction` - Whether to stack the two panes verticaly or horizontaly, similar to [Flex direction](https://api.flutter.dev/flutter/widgets/Flex/direction.html). This property is ignored for displays with a hinge, in which case the direction is `horizontal` for vertical hinges and `vertical` for horizontal hinges.
+- `textDirection` - When panes are laid out horizontally, this determines which one goes on the left. Behaves the same as [Flex textDirection](https://api.flutter.dev/flutter/widgets/Flex/textDirection.html)
+- `verticalDirection` - When panes are laid out vertically, this determines which one goes at the top. Behaves the same as [Flex verticalDirection](https://api.flutter.dev/flutter/widgets/Flex/verticalDirection.html)
+- `padding` - The padding between TwoPane and the edges of the screen. If there is spacing between TwoPane and the root MediaQuery, `padding` is used to correctly align the two panes to the hinge.
+
+> Most of the parameters provided to TwoPane are ignored when the device has a hinge. This means that you can focus on how the layout works on large screens like tablets and desktops, while also having it adapt well to the dual-screen form factor by default.
+
+## TwoPane example
+
+```dart
+Widget build(BuildContext context) {
+  return TwoPane(
+    startPane: _widgetA(),
+    endPane: _widgetB(),
+    paneProportion: 0.3,
+    panePriority: MediaQuery.of(context).size.width > 500 ? TwoPanePriority.both :TwoPanePriority.pane1,
+  );
+}
+```
+
+This sample code produces the results at the beginning of this article:
+
+- On **Surface Duo**, widget A and widget B both take one screen.
+  ![Flutter TwoPaneView on Surface Duo](https://github.com/microsoft/flutter-dualscreen/blob/main/images/twopaneview-surfaceduo-simple.png)
+- On a **tablet** or **desktop**, widget A takes 30% of the screen while widget B takes the remaining 70%.
+  ![Flutter TwoPaneView on desktop](https://github.com/microsoft/flutter-dualscreen/blob/main/images/twopaneview-desktop-simple.png)
+- On a **small phone** which is less than 500 logical pixels wide, only widget A is visible.
+  ![Flutter TwoPaneView on a candybar phone](https://github.com/microsoft/flutter-dualscreen/blob/main/images/twopaneview-phone-simple.png)
 
 # Hinge angle sensor
 
@@ -10,7 +69,7 @@ Foldable and dual-screen devices have a hinge between the two moving parts of th
 
 > The hinge angle is used to determine the [device posture](https://developer.android.com/guide/topics/ui/foldables#postures). If you're looking to write code that depends on the device posture, we recommend using the functionality provided by [MediaQuery Display Features](https://docs.microsoft.com/en-us/dual-screen/flutter/mediaquery) instead.
 
-## Usage
+## Hinge angle API
 
 To use this plugin, add `dual_screen` as a dependency in your pubspec.yaml file.
 
@@ -20,6 +79,8 @@ DualScreenInfo exposes 2 static properties:
 
 - `hingeAngleEvents`: Broadcast stream of events from the device hinge angle sensor. If the device is not equipped with a hinge angle sensor, the stream produces no events.
 - `hasHingeAngleSensor`: Future returning true if the device has a hinge angle sensor. Alternatively, if your app already uses `MediaQuery.displayFeatures` or `MediaQuery.hinge` to adapt to foldable or dual-screen form factors, you can safely assume the hinge angle sensor exists and that `hingeAngleEvents` produces usable values.
+
+## Hinge angle example
 
 ```dart
 import 'package:dual_screen/dual_screen_info.dart';
@@ -35,7 +96,9 @@ DualScreenInfo.hasHingeAngleSensor.then((bool hasHingeSensor) {
 
 ## Testing
 
-If you want to test the hinge angle sensor functionality you can either use the [Surface Duo emulator](https://docs.microsoft.com/en-us/dual-screen/android/emulator/get-started) or one of the [foldable emulators available in Android Studio](https://developer.android.com/guide/topics/ui/foldables#emulators). Both emulators provide a hinge angle virtual sensor. The Surface Duo emulator is the only one with two separate screens.
+Examples on how to mock the hinge angle or display features can be found in the [test](https://github.com/microsoft/flutter-dualscreen/tree/main/test) folder.
+
+Testing the hinge angle sensor functionality can be done using the [Surface Duo emulator](https://docs.microsoft.com/en-us/dual-screen/android/emulator/get-started) or one of the [foldable emulators available in Android Studio](https://developer.android.com/guide/topics/ui/foldables#emulators). Both emulators provide a hinge angle virtual sensor. The Surface Duo emulator is the only one with two separate screens.
 
 ![Surface Duo Emulator Hinge Sensor](https://github.com/microsoft/flutter-dualscreen/blob/main/images/emulator_hinge_angle.jpg)
 

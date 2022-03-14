@@ -34,7 +34,7 @@ class HingeSensorResolver(private val sensorManager: SensorManager) {
 
     private fun resolveUsingSensorName(): Sensor? {
         return sensorManager.getSensorList(Sensor.TYPE_ALL).firstOrNull {
-            it.name?.toLowerCase(Locale.ROOT)?.contains(HINGE_ANGLE_SENSOR_NAME) ?: false
+            it.name?.lowercase()?.contains(HINGE_ANGLE_SENSOR_NAME) ?: false
         }
     }
 
