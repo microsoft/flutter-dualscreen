@@ -83,7 +83,7 @@ DualScreenInfo exposes 2 static properties:
 ## Hinge angle example
 
 ```dart
-import 'package:dual_screen/dual_screen_info.dart';
+import 'package:dual_screen/dual_screen.dart';
 
 DualScreenInfo.hingeAngleEvents.listen((double hingeAngle) {
   print(hingeAngle);
