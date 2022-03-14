@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Added TwoPane widget
+
 ## 1.0.0+3
 
 * Updated Readme
