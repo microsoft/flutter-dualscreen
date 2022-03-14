@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v2
         
       - name: 'Dart package publisher'
-        uses: andreidiaconu/dart-package-publisher@master
+        uses: k-paxian/dart-package-publisher@master
         with:
           flutter: true
           accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
