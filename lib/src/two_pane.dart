@@ -172,14 +172,17 @@ class TwoPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(textDirection != null || debugCheckHasDirectionality(
-      context,
-      why: 'to determine what pane goes on the right or left side. The real '
-          'direction of TwoPane is horizontal when there are display features '
-          'separating the screen into two horizontal sub-screens, in which case '
-          'the provided "direction" is ignored.',
-      alternative: "Alternatively, consider specifying the 'textDirection' argument on the TwoPane.",
-    ));
+    assert(textDirection != null ||
+        debugCheckHasDirectionality(
+          context,
+          why:
+              'to determine what pane goes on the right or left side. The real '
+              'direction of TwoPane is horizontal when there are display features '
+              'separating the screen into two horizontal sub-screens, in which case '
+              'the provided "direction" is ignored.',
+          alternative:
+              "Alternatively, consider specifying the 'textDirection' argument on the TwoPane.",
+        ));
     final TextDirection resolvedTextDirection = _resolveTextDirection(context);
 
     final MediaQueryData? mediaQuery = MediaQuery.maybeOf(context);
@@ -194,20 +197,27 @@ class TwoPane extends StatelessWidget {
     late final TwoPanePriority resolvedPanePriority;
     const int fractionBase = 1000000000000;
 
-    if (mediaQuery == null){
+    if (mediaQuery == null) {
       resolvedDirection = direction;
       resolvedPanePriority = panePriority;
     } else {
       final Rect position = padding.deflateRect(Offset.zero & mediaQuery.size);
       size = position.size;
-      final Iterable<DisplayFeature> separatingDisplayFeatures = _separatingDisplayFeatures(mediaQuery.displayFeatures, position);
-      resolvedDirection = _resolveDirection(separatingDisplayFeatures, position);
-      final DisplayFeature? displayFeature = _firstDisplayFeature(separatingDisplayFeatures, resolvedDirection, resolvedTextDirection, verticalDirection);
+      final Iterable<DisplayFeature> separatingDisplayFeatures =
+          _separatingDisplayFeatures(mediaQuery.displayFeatures, position);
+      resolvedDirection =
+          _resolveDirection(separatingDisplayFeatures, position);
+      final DisplayFeature? displayFeature = _firstDisplayFeature(
+          separatingDisplayFeatures,
+          resolvedDirection,
+          resolvedTextDirection,
+          verticalDirection);
       if (displayFeature == null) {
         displayFeatureBounds = null;
         resolvedPanePriority = panePriority;
       } else {
-        displayFeatureBounds = displayFeature.bounds.intersect(position).shift(-position.topLeft);
+        displayFeatureBounds =
+            displayFeature.bounds.intersect(position).shift(-position.topLeft);
         resolvedPanePriority = TwoPanePriority.both;
       }
     }
@@ -222,97 +232,109 @@ class TwoPane extends StatelessWidget {
       resolvedDelimiter = const SizedBox();
     } else {
       // We are showing both panes
-      switch (resolvedDirection){
-        case Axis.horizontal: {
-          // Panels are left and right.
-          late final Rect seam;
-          if (displayFeatureBounds == null) {
-            // Simulate a display feature using paneProportion
-            // This is then used to remove padding from pane MediaQueries
-            seam = Rect.fromLTWH(paneProportion*size.width, 0, 0, size.height);
-          } else {
-            seam = displayFeatureBounds;
-          }
-          resolvedDelimiter = SizedBox(width: seam.size.width);
-          final int leftFlex = (seam.left * fractionBase).toInt();
-          final int rightFlex = ((size.width - seam.right) * fractionBase).toInt();
-          final Rect leftScreen = Offset.zero & Size(seam.left, size.height);
-          final Rect rightScreen = seam.topRight & Size(size.width - seam.right, size.height);
-          switch (resolvedTextDirection){
-            case TextDirection.ltr: {
-              startPaneFlex = leftFlex;
-              endPaneFlex = rightFlex;
-              resolvedStartPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(leftScreen),
-                child: startPane,
-              );
-              resolvedEndPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(rightScreen),
-                child: endPane,
-              );
+      switch (resolvedDirection) {
+        case Axis.horizontal:
+          {
+            // Panels are left and right.
+            late final Rect seam;
+            if (displayFeatureBounds == null) {
+              // Simulate a display feature using paneProportion
+              // This is then used to remove padding from pane MediaQueries
+              seam =
+                  Rect.fromLTWH(paneProportion * size.width, 0, 0, size.height);
+            } else {
+              seam = displayFeatureBounds;
             }
-            break;
-            case TextDirection.rtl: {
-              startPaneFlex = rightFlex;
-              endPaneFlex = leftFlex;
-              resolvedStartPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(rightScreen),
-                child: startPane,
-              );
-              resolvedEndPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(leftScreen),
-                child: endPane,
-              );
+            resolvedDelimiter = SizedBox(width: seam.size.width);
+            final int leftFlex = (seam.left * fractionBase).toInt();
+            final int rightFlex =
+                ((size.width - seam.right) * fractionBase).toInt();
+            final Rect leftScreen = Offset.zero & Size(seam.left, size.height);
+            final Rect rightScreen =
+                seam.topRight & Size(size.width - seam.right, size.height);
+            switch (resolvedTextDirection) {
+              case TextDirection.ltr:
+                {
+                  startPaneFlex = leftFlex;
+                  endPaneFlex = rightFlex;
+                  resolvedStartPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(leftScreen),
+                    child: startPane,
+                  );
+                  resolvedEndPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(rightScreen),
+                    child: endPane,
+                  );
+                }
+                break;
+              case TextDirection.rtl:
+                {
+                  startPaneFlex = rightFlex;
+                  endPaneFlex = leftFlex;
+                  resolvedStartPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(rightScreen),
+                    child: startPane,
+                  );
+                  resolvedEndPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(leftScreen),
+                    child: endPane,
+                  );
+                }
+                break;
             }
-            break;
           }
-        }
-        break;
-        case Axis.vertical: {
-          // Panels are top and bottom.
-          late final Rect seam;
-          if (displayFeatureBounds == null) {
-            // Simulate a display feature using paneProportion
-            // This is then used to remove padding from pane MediaQueries
-            seam = Rect.fromLTWH(0, paneProportion*size.height, size.width, 0);
-          } else {
-            seam = displayFeatureBounds;
-          }
-          resolvedDelimiter = SizedBox(height: seam.size.height);
-          final int topPane = (seam.top * fractionBase).toInt();
-          final int bottomPane = ((size.height - seam.bottom) * fractionBase).toInt();
-          final Rect topScreen = Offset.zero & Size(size.width, seam.top);
-          final Rect bottomScreen = seam.bottomLeft & Size(size.width, size.height - seam.bottom);
-          switch (verticalDirection) {
-            case VerticalDirection.down: {
-              startPaneFlex = topPane;
-              endPaneFlex = bottomPane;
-              resolvedStartPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(topScreen),
-                child: startPane,
-              );
-              resolvedEndPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(bottomScreen),
-                child: endPane,
-              );
+          break;
+        case Axis.vertical:
+          {
+            // Panels are top and bottom.
+            late final Rect seam;
+            if (displayFeatureBounds == null) {
+              // Simulate a display feature using paneProportion
+              // This is then used to remove padding from pane MediaQueries
+              seam =
+                  Rect.fromLTWH(0, paneProportion * size.height, size.width, 0);
+            } else {
+              seam = displayFeatureBounds;
             }
-            break;
-            case VerticalDirection.up: {
-              startPaneFlex = bottomPane;
-              endPaneFlex = topPane;
-              resolvedStartPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(bottomScreen),
-                child: startPane,
-              );
-              resolvedEndPane = MediaQuery(
-                data: mediaQuery.removeDisplayFeaturesTemp(topScreen),
-                child: endPane,
-              );
+            resolvedDelimiter = SizedBox(height: seam.size.height);
+            final int topPane = (seam.top * fractionBase).toInt();
+            final int bottomPane =
+                ((size.height - seam.bottom) * fractionBase).toInt();
+            final Rect topScreen = Offset.zero & Size(size.width, seam.top);
+            final Rect bottomScreen =
+                seam.bottomLeft & Size(size.width, size.height - seam.bottom);
+            switch (verticalDirection) {
+              case VerticalDirection.down:
+                {
+                  startPaneFlex = topPane;
+                  endPaneFlex = bottomPane;
+                  resolvedStartPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(topScreen),
+                    child: startPane,
+                  );
+                  resolvedEndPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(bottomScreen),
+                    child: endPane,
+                  );
+                }
+                break;
+              case VerticalDirection.up:
+                {
+                  startPaneFlex = bottomPane;
+                  endPaneFlex = topPane;
+                  resolvedStartPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(bottomScreen),
+                    child: startPane,
+                  );
+                  resolvedEndPane = MediaQuery(
+                    data: mediaQuery.removeDisplayFeaturesTemp(topScreen),
+                    child: endPane,
+                  );
+                }
+                break;
             }
-            break;
           }
-        }
-        break;
+          break;
       }
     }
 
@@ -326,17 +348,20 @@ class TwoPane extends StatelessWidget {
           : MainAxisAlignment.start,
       children: <Widget>[
         if (resolvedPanePriority != TwoPanePriority.end)
-          KeyedSubtree.wrap( Expanded(
-            flex: startPaneFlex,
-            child: resolvedStartPane,
-          ), 1),
-        if (resolvedPanePriority == TwoPanePriority.both)
-          resolvedDelimiter,
+          KeyedSubtree.wrap(
+              Expanded(
+                flex: startPaneFlex,
+                child: resolvedStartPane,
+              ),
+              1),
+        if (resolvedPanePriority == TwoPanePriority.both) resolvedDelimiter,
         if (resolvedPanePriority != TwoPanePriority.start)
-          KeyedSubtree.wrap( Expanded(
-            flex: endPaneFlex,
-            child: resolvedEndPane,
-          ), 2),
+          KeyedSubtree.wrap(
+              Expanded(
+                flex: endPaneFlex,
+                child: resolvedEndPane,
+              ),
+              2),
       ],
     );
   }
@@ -350,11 +375,13 @@ class TwoPane extends StatelessWidget {
   ///   * If multiple are found in the same direction, the same rule applies.
   ///   * If multiple are found in both directions, then the provided
   ///     [direction] is used.
-  Axis _resolveDirection(Iterable<DisplayFeature> displayFeatures, Rect position) {
-    final Iterable<DisplayFeature> separatingFeatures = _separatingDisplayFeatures(displayFeatures, position);
+  Axis _resolveDirection(
+      Iterable<DisplayFeature> displayFeatures, Rect position) {
+    final Iterable<DisplayFeature> separatingFeatures =
+        _separatingDisplayFeatures(displayFeatures, position);
     bool verticalSubScreensExist = false;
     bool horizontalSubScreensExist = false;
-    for (final DisplayFeature displayFeature in separatingFeatures){
+    for (final DisplayFeature displayFeature in separatingFeatures) {
       if (_splitsHorizontally(displayFeature.bounds, position)) {
         horizontalSubScreensExist = true;
       }
@@ -377,48 +404,57 @@ class TwoPane extends StatelessWidget {
   /// In case there are multiple display features, [textDirection] or
   /// [verticalDirection] are used to determine the first one, according
   /// [direction].
-  static DisplayFeature? _firstDisplayFeature(Iterable<DisplayFeature> displayFeatures,
-      Axis direction, TextDirection textDirection, VerticalDirection verticalDirection) {
+  static DisplayFeature? _firstDisplayFeature(
+      Iterable<DisplayFeature> displayFeatures,
+      Axis direction,
+      TextDirection textDirection,
+      VerticalDirection verticalDirection) {
     if (displayFeatures.isEmpty) {
       return null;
     }
     DisplayFeature result = displayFeatures.first;
-    for (final DisplayFeature displayFeature in displayFeatures){
+    for (final DisplayFeature displayFeature in displayFeatures) {
       switch (direction) {
-        case Axis.horizontal: {
-          switch (textDirection) {
-            case TextDirection.ltr: {
-              if (displayFeature.bounds.left < result.bounds.left) {
-                result = displayFeature;
-              }
+        case Axis.horizontal:
+          {
+            switch (textDirection) {
+              case TextDirection.ltr:
+                {
+                  if (displayFeature.bounds.left < result.bounds.left) {
+                    result = displayFeature;
+                  }
+                }
+                break;
+              case TextDirection.rtl:
+                {
+                  if (displayFeature.bounds.right > result.bounds.right) {
+                    result = displayFeature;
+                  }
+                }
+                break;
             }
-            break;
-            case TextDirection.rtl: {
-              if (displayFeature.bounds.right > result.bounds.right) {
-                result = displayFeature;
-              }
-            }
-            break;
           }
-        }
-        break;
-        case Axis.vertical: {
-          switch (verticalDirection) {
-            case VerticalDirection.down: {
-              if (displayFeature.bounds.top < result.bounds.top) {
-                result = displayFeature;
-              }
+          break;
+        case Axis.vertical:
+          {
+            switch (verticalDirection) {
+              case VerticalDirection.down:
+                {
+                  if (displayFeature.bounds.top < result.bounds.top) {
+                    result = displayFeature;
+                  }
+                }
+                break;
+              case VerticalDirection.up:
+                {
+                  if (displayFeature.bounds.bottom > result.bounds.bottom) {
+                    result = displayFeature;
+                  }
+                }
+                break;
             }
-            break;
-            case VerticalDirection.up: {
-              if (displayFeature.bounds.bottom > result.bounds.bottom) {
-                result = displayFeature;
-              }
-            }
-            break;
           }
-        }
-        break;
+          break;
       }
     }
     return result;
@@ -436,26 +472,32 @@ class TwoPane extends StatelessWidget {
   ///   * it is at least as tall as the screen, producing a left and right
   ///     sub-screen or it is at least as wide as the screen, producing a top and
   ///     bottom sub-screen.
-  static Iterable<DisplayFeature> _separatingDisplayFeatures(Iterable<DisplayFeature> displayFeatures, Rect position) {
+  static Iterable<DisplayFeature> _separatingDisplayFeatures(
+      Iterable<DisplayFeature> displayFeatures, Rect position) {
     final List<DisplayFeature> result = <DisplayFeature>[];
     for (final DisplayFeature displayFeature in displayFeatures) {
       final Rect bounds = displayFeature.bounds;
-      if (_splitsHorizontally(bounds, position) || _splitsVertically(bounds, position)) {
+      if (_splitsHorizontally(bounds, position) ||
+          _splitsVertically(bounds, position)) {
         result.add(displayFeature);
       }
     }
     return result;
   }
 
-  static bool _splitsHorizontally(Rect bounds, Rect position){
-    final bool tallEnough = bounds.top <= position.top && bounds.bottom >= position.bottom;
-    final bool splitsHorizontally = bounds.left > position.left && bounds.right < position.right;
+  static bool _splitsHorizontally(Rect bounds, Rect position) {
+    final bool tallEnough =
+        bounds.top <= position.top && bounds.bottom >= position.bottom;
+    final bool splitsHorizontally =
+        bounds.left > position.left && bounds.right < position.right;
     return tallEnough && splitsHorizontally;
   }
 
-  static bool _splitsVertically(Rect bounds, Rect position){
-    final bool wideEnough = bounds.left <= position.left && bounds.right >= position.right;
-    final bool splitsVertically = bounds.top > position.top && bounds.bottom < position.bottom;
+  static bool _splitsVertically(Rect bounds, Rect position) {
+    final bool wideEnough =
+        bounds.left <= position.left && bounds.right >= position.right;
+    final bool splitsVertically =
+        bounds.top > position.top && bounds.bottom < position.bottom;
     return wideEnough && splitsVertically;
   }
 }
@@ -479,11 +521,13 @@ enum TwoPanePriority {
 // removed once `removeDisplayFeatures` makes it to `stable`.
 extension _MediaQueryDataTemp on MediaQueryData {
   MediaQueryData removeDisplayFeaturesTemp(Rect subScreen) {
-    assert(subScreen.left >= 0.0 && subScreen.top >= 0.0 &&
-        subScreen.right <= size.width && subScreen.bottom <= size.height,
-    "'subScreen' argument cannot be outside the bounds of the screen");
-    if (subScreen.size == size && subScreen.topLeft == Offset.zero)
-      return this;
+    assert(
+        subScreen.left >= 0.0 &&
+            subScreen.top >= 0.0 &&
+            subScreen.right <= size.width &&
+            subScreen.bottom <= size.height,
+        "'subScreen' argument cannot be outside the bounds of the screen");
+    if (subScreen.size == size && subScreen.topLeft == Offset.zero) return this;
     final double rightInset = size.width - subScreen.right;
     final double bottomInset = size.height - subScreen.bottom;
     return copyWith(
@@ -505,9 +549,10 @@ extension _MediaQueryDataTemp on MediaQueryData {
         right: math.max(0.0, viewInsets.right - rightInset),
         bottom: math.max(0.0, viewInsets.bottom - bottomInset),
       ),
-      displayFeatures: displayFeatures.where(
-              (DisplayFeature displayFeature) => subScreen.overlaps(displayFeature.bounds)
-      ).toList(),
+      displayFeatures: displayFeatures
+          .where((DisplayFeature displayFeature) =>
+              subScreen.overlaps(displayFeature.bounds))
+          .toList(),
     );
   }
 }
