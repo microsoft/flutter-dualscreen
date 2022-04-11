@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Added compatibility with current flutter stable channel
+
 ## 1.0.1
 
 * Added TwoPane widget
