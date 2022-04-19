@@ -1,12 +1,12 @@
 name: dual_screen
 description: Foldable and dual-screen support, like the TwoPane widget and hinge angle sensor data.
-version: 1.0.2
+version: 1.0.2+2
 homepage: https://docs.microsoft.com/en-us/dual-screen/
 repository: https://github.com/microsoft/flutter-dualscreen
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=2.11.0-0"
+  flutter: ">=2.10.0"
 
 dependencies:
   flutter:

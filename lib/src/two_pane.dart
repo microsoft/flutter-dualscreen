@@ -222,7 +222,6 @@ class TwoPane extends StatelessWidget {
       }
     }
 
-    print('$resolvedPanePriority');
     if (mediaQuery == null || resolvedPanePriority != TwoPanePriority.both) {
       // Only showing one pane or there is no padding to remove from pane MediaQueries
       startPaneFlex = (fractionBase * paneProportion).toInt();

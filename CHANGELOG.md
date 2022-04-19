@@ -1,3 +1,7 @@
+## 1.0.2+2
+
+* Removed requirement for flutter 2.11
+
 ## 1.0.2
 
 * Added compatibility with current flutter stable channel
