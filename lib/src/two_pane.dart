@@ -1,7 +1,6 @@
 /// Copyright (c) Microsoft Corporation.
 /// Licensed under the MIT License.
 
-import 'dart:math' as math;
 import 'dart:ui' show DisplayFeature;
 
 import 'package:flutter/widgets.dart';
@@ -191,8 +190,6 @@ class TwoPane extends StatelessWidget {
     late final Axis resolvedDirection;
     late final int startPaneFlex;
     late final int endPaneFlex;
-    late final Widget resolvedStartPane;
-    late final Widget resolvedEndPane;
     late final Widget resolvedDelimiter;
     late final TwoPanePriority resolvedPanePriority;
     const int fractionBase = 1000000000000;
@@ -226,8 +223,6 @@ class TwoPane extends StatelessWidget {
       // Only showing one pane or there is no padding to remove from pane MediaQueries
       startPaneFlex = (fractionBase * paneProportion).toInt();
       endPaneFlex = fractionBase - startPaneFlex;
-      resolvedStartPane = startPane;
-      resolvedEndPane = endPane;
       resolvedDelimiter = const SizedBox();
     } else {
       // We are showing both panes
@@ -248,36 +243,17 @@ class TwoPane extends StatelessWidget {
             final int leftFlex = (seam.left * fractionBase).toInt();
             final int rightFlex =
                 ((size.width - seam.right) * fractionBase).toInt();
-            final Rect leftScreen = Offset.zero & Size(seam.left, size.height);
-            final Rect rightScreen =
-                seam.topRight & Size(size.width - seam.right, size.height);
             switch (resolvedTextDirection) {
               case TextDirection.ltr:
                 {
                   startPaneFlex = leftFlex;
                   endPaneFlex = rightFlex;
-                  resolvedStartPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(leftScreen),
-                    child: startPane,
-                  );
-                  resolvedEndPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(rightScreen),
-                    child: endPane,
-                  );
                 }
                 break;
               case TextDirection.rtl:
                 {
                   startPaneFlex = rightFlex;
                   endPaneFlex = leftFlex;
-                  resolvedStartPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(rightScreen),
-                    child: startPane,
-                  );
-                  resolvedEndPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(leftScreen),
-                    child: endPane,
-                  );
                 }
                 break;
             }
@@ -299,36 +275,17 @@ class TwoPane extends StatelessWidget {
             final int topPane = (seam.top * fractionBase).toInt();
             final int bottomPane =
                 ((size.height - seam.bottom) * fractionBase).toInt();
-            final Rect topScreen = Offset.zero & Size(size.width, seam.top);
-            final Rect bottomScreen =
-                seam.bottomLeft & Size(size.width, size.height - seam.bottom);
             switch (verticalDirection) {
               case VerticalDirection.down:
                 {
                   startPaneFlex = topPane;
                   endPaneFlex = bottomPane;
-                  resolvedStartPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(topScreen),
-                    child: startPane,
-                  );
-                  resolvedEndPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(bottomScreen),
-                    child: endPane,
-                  );
                 }
                 break;
               case VerticalDirection.up:
                 {
                   startPaneFlex = bottomPane;
                   endPaneFlex = topPane;
-                  resolvedStartPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(bottomScreen),
-                    child: startPane,
-                  );
-                  resolvedEndPane = MediaQuery(
-                    data: mediaQuery.removeDisplayFeaturesTemp(topScreen),
-                    child: endPane,
-                  );
                 }
                 break;
             }
@@ -350,7 +307,7 @@ class TwoPane extends StatelessWidget {
           KeyedSubtree.wrap(
               Expanded(
                 flex: startPaneFlex,
-                child: resolvedStartPane,
+                child: startPane,
               ),
               1),
         if (resolvedPanePriority == TwoPanePriority.both) resolvedDelimiter,
@@ -358,7 +315,7 @@ class TwoPane extends StatelessWidget {
           KeyedSubtree.wrap(
               Expanded(
                 flex: endPaneFlex,
-                child: resolvedEndPane,
+                child: endPane,
               ),
               2),
       ],
@@ -512,46 +469,4 @@ enum TwoPanePriority {
 
   /// Show only the second pane
   end,
-}
-
-// Adds a copy of `removeDisplayFeatures`, which is a method of [MediaQueryData]
-// that hasn't yet made it to all flutter channels. This way, this library can
-// be used regardless of flutter channel. A temporary solution that will be
-// removed once `removeDisplayFeatures` makes it to `stable`.
-extension _MediaQueryDataTemp on MediaQueryData {
-  MediaQueryData removeDisplayFeaturesTemp(Rect subScreen) {
-    assert(
-        subScreen.left >= 0.0 &&
-            subScreen.top >= 0.0 &&
-            subScreen.right <= size.width &&
-            subScreen.bottom <= size.height,
-        "'subScreen' argument cannot be outside the bounds of the screen");
-    if (subScreen.size == size && subScreen.topLeft == Offset.zero) return this;
-    final double rightInset = size.width - subScreen.right;
-    final double bottomInset = size.height - subScreen.bottom;
-    return copyWith(
-      padding: EdgeInsets.only(
-        left: math.max(0.0, padding.left - subScreen.left),
-        top: math.max(0.0, padding.top - subScreen.top),
-        right: math.max(0.0, padding.right - rightInset),
-        bottom: math.max(0.0, padding.bottom - bottomInset),
-      ),
-      viewPadding: EdgeInsets.only(
-        left: math.max(0.0, viewPadding.left - subScreen.left),
-        top: math.max(0.0, viewPadding.top - subScreen.top),
-        right: math.max(0.0, viewPadding.right - rightInset),
-        bottom: math.max(0.0, viewPadding.bottom - bottomInset),
-      ),
-      viewInsets: EdgeInsets.only(
-        left: math.max(0.0, viewInsets.left - subScreen.left),
-        top: math.max(0.0, viewInsets.top - subScreen.top),
-        right: math.max(0.0, viewInsets.right - rightInset),
-        bottom: math.max(0.0, viewInsets.bottom - bottomInset),
-      ),
-      displayFeatures: displayFeatures
-          .where((DisplayFeature displayFeature) =>
-              subScreen.overlaps(displayFeature.bounds))
-          .toList(),
-    );
-  }
 }
