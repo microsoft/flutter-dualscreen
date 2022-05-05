@@ -43,7 +43,7 @@ void main() {
     expect(message, contains('textDirection'));
   });
 
-  testWidgets('TwoPane separating display feature overrides params', (WidgetTester tester) async {
+  testWidgets('TwoPane separating display feature overrides all params', (WidgetTester tester) async {
     OrderPainter.log.clear();
     const Key twoPaneKey = Key('twoPane');
     const Key pane1Key = Key('pane1');
@@ -95,6 +95,349 @@ void main() {
     expect(renderBox.size.height, equals(600.0));
     boxParentData = renderBox.parentData! as BoxParentData;
     expect(boxParentData.offset.dx, equals(410.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
+  testWidgets('TwoPane separating display feature overrides only direction', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    const Key pane1Key = Key('pane1');
+    const Key pane2Key = Key('pane2');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+        displayFeatures: <DisplayFeature>[
+          const DisplayFeature(
+            bounds: Rect.fromLTRB(390, 0, 410, 600),
+            type: DisplayFeatureType.cutout,
+            state: DisplayFeatureState.unknown,
+          )
+        ]
+    );
+
+    // Default pane priority is "both"
+    // Pane direction is overridden by the display feature
+    // Rest of the parameters are not overriden
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.ltr,
+        verticalDirection: VerticalDirection.up,
+        direction: Axis.vertical,
+        paneProportion: 0.1,
+        panePriority: TwoPanePriority.both,
+        startPane: SizedBox(key: pane1Key, width: 100.0, height: 100.0, child: log(1)),
+        endPane: SizedBox(key: pane2Key, width: 100.0, height: 100.0, child: log(2)),
+        allowedOverrides: const {TwoPaneAllowedOverrides.direction},
+      ),
+    ));
+
+    RenderBox renderBox;
+    BoxParentData boxParentData;
+
+    renderBox = tester.renderObject(find.byKey(twoPaneKey));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(600.0));
+
+    renderBox = tester.renderObject(find.byKey(pane1Key));
+    expect(renderBox.size.width, equals(80.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(0.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    renderBox = tester.renderObject(find.byKey(pane2Key));
+    expect(renderBox.size.width, equals(720.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(80.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
+  testWidgets('TwoPane separating display feature overrides only paneProportion', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    const Key pane1Key = Key('pane1');
+    const Key pane2Key = Key('pane2');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+        displayFeatures: <DisplayFeature>[
+          const DisplayFeature(
+            bounds: Rect.fromLTRB(390, 0, 410, 600),
+            type: DisplayFeatureType.cutout,
+            state: DisplayFeatureState.unknown,
+          )
+        ]
+    );
+
+    // Default pane priority is "both"
+    // Pane direction is overridden by the display feature
+    // Rest of the parameters are not overriden
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.ltr,
+        verticalDirection: VerticalDirection.up,
+        direction: Axis.horizontal,
+        paneProportion: 0.1,
+        panePriority: TwoPanePriority.both,
+        startPane: SizedBox(key: pane1Key, width: 100.0, height: 100.0, child: log(1)),
+        endPane: SizedBox(key: pane2Key, width: 100.0, height: 100.0, child: log(2)),
+        allowedOverrides: const {TwoPaneAllowedOverrides.paneProportion},
+      ),
+    ));
+
+    RenderBox renderBox;
+    BoxParentData boxParentData;
+
+    renderBox = tester.renderObject(find.byKey(twoPaneKey));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(600.0));
+
+    renderBox = tester.renderObject(find.byKey(pane1Key));
+    expect(renderBox.size.width, equals(390.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(0.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    renderBox = tester.renderObject(find.byKey(pane2Key));
+    expect(renderBox.size.width, equals(390.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(410.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
+  testWidgets('TwoPane separating display feature overrides only panePriority', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    const Key pane1Key = Key('pane1');
+    const Key pane2Key = Key('pane2');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+        displayFeatures: <DisplayFeature>[
+          const DisplayFeature(
+            bounds: Rect.fromLTRB(390, 0, 410, 600),
+            type: DisplayFeatureType.cutout,
+            state: DisplayFeatureState.unknown,
+          )
+        ]
+    );
+
+    // Default pane priority is "both"
+    // Pane direction is overridden by the display feature
+    // Rest of the parameters are not overriden
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.ltr,
+        verticalDirection: VerticalDirection.up,
+        direction: Axis.horizontal,
+        paneProportion: 0.1,
+        panePriority: TwoPanePriority.start,
+        startPane: SizedBox(key: pane1Key, width: 100.0, height: 100.0, child: log(1)),
+        endPane: SizedBox(key: pane2Key, width: 100.0, height: 100.0, child: log(2)),
+        allowedOverrides: const {TwoPaneAllowedOverrides.panePriority},
+      ),
+    ));
+
+    RenderBox renderBox;
+    BoxParentData boxParentData;
+
+    renderBox = tester.renderObject(find.byKey(twoPaneKey));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(600.0));
+
+    renderBox = tester.renderObject(find.byKey(pane1Key));
+    expect(renderBox.size.width, equals(80.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(0.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    renderBox = tester.renderObject(find.byKey(pane2Key));
+    expect(renderBox.size.width, equals(720.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(80.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
+  testWidgets('TwoPane separating display feature does not override direction', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    const Key pane1Key = Key('pane1');
+    const Key pane2Key = Key('pane2');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+        displayFeatures: <DisplayFeature>[
+          const DisplayFeature(
+            bounds: Rect.fromLTRB(390, 0, 410, 600),
+            type: DisplayFeatureType.cutout,
+            state: DisplayFeatureState.unknown,
+          )
+        ]
+    );
+
+    // Default pane priority is "both"
+    // Pane direction is overridden by the display feature
+    // Rest of the parameters are not overriden
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.ltr,
+        verticalDirection: VerticalDirection.down,
+        direction: Axis.vertical,
+        paneProportion: 0.1,
+        panePriority: TwoPanePriority.both,
+        startPane: SizedBox(key: pane1Key, width: 100.0, height: 100.0, child: log(1)),
+        endPane: SizedBox(key: pane2Key, width: 100.0, height: 100.0, child: log(2)),
+        allowedOverrides: const {TwoPaneAllowedOverrides.panePriority, TwoPaneAllowedOverrides.paneProportion},
+      ),
+    ));
+
+    RenderBox renderBox;
+    BoxParentData boxParentData;
+
+    renderBox = tester.renderObject(find.byKey(twoPaneKey));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(600.0));
+
+    renderBox = tester.renderObject(find.byKey(pane1Key));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(60.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(0.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    renderBox = tester.renderObject(find.byKey(pane2Key));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(540.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(0.0));
+    expect(boxParentData.offset.dy, equals(60.0));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
+  testWidgets('TwoPane separating display feature does not override panePriority', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    const Key pane1Key = Key('pane1');
+    const Key pane2Key = Key('pane2');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+        displayFeatures: <DisplayFeature>[
+          const DisplayFeature(
+            bounds: Rect.fromLTRB(390, 0, 410, 600),
+            type: DisplayFeatureType.cutout,
+            state: DisplayFeatureState.unknown,
+          )
+        ]
+    );
+
+    // Default pane priority is "both"
+    // Pane direction is overridden by the display feature
+    // Rest of the parameters are not overriden
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.ltr,
+        verticalDirection: VerticalDirection.down,
+        direction: Axis.vertical,
+        paneProportion: 0.1,
+        panePriority: TwoPanePriority.start,
+        startPane: SizedBox(key: pane1Key, width: 100.0, height: 100.0, child: log(1)),
+        endPane: SizedBox(key: pane2Key, width: 100.0, height: 100.0, child: log(2)),
+        allowedOverrides: const {TwoPaneAllowedOverrides.direction, TwoPaneAllowedOverrides.paneProportion},
+      ),
+    ));
+
+    RenderBox renderBox;
+    BoxParentData boxParentData;
+
+    renderBox = tester.renderObject(find.byKey(twoPaneKey));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(600.0));
+
+    renderBox = tester.renderObject(find.byKey(pane1Key));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(0.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    expect(find.byKey(pane2Key), findsNothing);
+
+    expect(OrderPainter.log, <int>[1]);
+  });
+
+  testWidgets('TwoPane separating display feature does not override paneProportion', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    const Key pane1Key = Key('pane1');
+    const Key pane2Key = Key('pane2');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+        displayFeatures: <DisplayFeature>[
+          const DisplayFeature(
+            bounds: Rect.fromLTRB(390, 0, 410, 600),
+            type: DisplayFeatureType.cutout,
+            state: DisplayFeatureState.unknown,
+          )
+        ]
+    );
+
+    // Default pane priority is "both"
+    // Pane direction is overridden by the display feature
+    // Rest of the parameters are not overriden
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.ltr,
+        verticalDirection: VerticalDirection.down,
+        direction: Axis.vertical,
+        paneProportion: 0.1,
+        panePriority: TwoPanePriority.both,
+        startPane: SizedBox(key: pane1Key, width: 100.0, height: 100.0, child: log(1)),
+        endPane: SizedBox(key: pane2Key, width: 100.0, height: 100.0, child: log(2)),
+        allowedOverrides: const {TwoPaneAllowedOverrides.panePriority, TwoPaneAllowedOverrides.direction},
+      ),
+    ));
+
+    RenderBox renderBox;
+    BoxParentData boxParentData;
+
+    renderBox = tester.renderObject(find.byKey(twoPaneKey));
+    expect(renderBox.size.width, equals(800.0));
+    expect(renderBox.size.height, equals(600.0));
+
+    renderBox = tester.renderObject(find.byKey(pane1Key));
+    expect(renderBox.size.width, equals(80.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(0.0));
+    expect(boxParentData.offset.dy, equals(0.0));
+
+    renderBox = tester.renderObject(find.byKey(pane2Key));
+    expect(renderBox.size.width, equals(720.0));
+    expect(renderBox.size.height, equals(600.0));
+    boxParentData = renderBox.parentData! as BoxParentData;
+    expect(boxParentData.offset.dx, equals(80.0));
     expect(boxParentData.offset.dy, equals(0.0));
 
     expect(OrderPainter.log, <int>[1, 2]);
