@@ -1,3 +1,9 @@
+## 1.0.3
+
+* TwoPane no longer removes display features from child panes. This allows child panes to know if the device has display features.
+* TwoPane has a new property called `allowedOverrides`. This allows for finer control over what layouts are possible on foldable devices.
+* Extension method `hinge` was added to MediaQueryData. This allows developers to use `MediaQuery.of(context).hinge` for logic related to the hinge.
+
 ## 1.0.2+2
 
 * Removed requirement for flutter 2.11

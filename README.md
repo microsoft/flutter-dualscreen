@@ -24,6 +24,7 @@ class TwoPane {
     TextDirection? textDirection,
     VerticalDirection verticalDirection,
     EdgeInsets padding,
+    Set<TwoPaneAllowedOverrides> allowedOverrides,
   });
 }
 ```
@@ -38,6 +39,7 @@ Properties of TwoPane:
 - `textDirection` - When panes are laid out horizontally, this determines which one goes on the left. Behaves the same as [Flex textDirection](https://api.flutter.dev/flutter/widgets/Flex/textDirection.html)
 - `verticalDirection` - When panes are laid out vertically, this determines which one goes at the top. Behaves the same as [Flex verticalDirection](https://api.flutter.dev/flutter/widgets/Flex/verticalDirection.html)
 - `padding` - The padding between TwoPane and the edges of the screen. If there is spacing between TwoPane and the root MediaQuery, `padding` is used to correctly align the two panes to the hinge.
+- `allowedOverrides` - The parameters that TwoPane is allowed to override when a separating display feature is found. By default, it contains `paneProportion`, `direction` and `panePriority`, allowing all possible overrides.
 
 > Most of the parameters provided to TwoPane are ignored when the device has a hinge. This means that you can focus on how the layout works on large screens like tablets and desktops, while also having it adapt well to the dual-screen form factor by default.
 
