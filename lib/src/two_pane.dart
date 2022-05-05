@@ -186,7 +186,7 @@ class TwoPane extends StatelessWidget {
   ///
   /// Defaults to `{TwoPaneAllowedOverrides.paneProportion,
   /// TwoPaneAllowedOverrides.direction, TwoPaneAllowedOverrides.panePriority}`,
-  /// allowing all possible overrides. By default, TwoPane
+  /// allowing all possible overrides.
   final Set<TwoPaneAllowedOverrides> allowedOverrides;
 
   TextDirection _resolveTextDirection(BuildContext context) =>
