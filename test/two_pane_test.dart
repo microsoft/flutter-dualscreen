@@ -617,6 +617,48 @@ void main() {
     expect(OrderPainter.log, <int>[1, 2]);
   });
 
+  testWidgets('TwoPane removes MediaQuery paddings and insets - LTR', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+      padding: const EdgeInsets.all(10),
+      viewPadding: const EdgeInsets.all(10),
+      viewInsets: const EdgeInsets.all(10),
+    );
+
+    late MediaQueryData unpaddedPane1;
+    late MediaQueryData unpaddedPane2;
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.ltr,
+        startPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane1 = MediaQuery.of(context);
+            return log(1);
+          },
+        ),
+        endPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane2 = MediaQuery.of(context);
+            return log(2);
+          },
+        ),
+      ),
+    ));
+
+    expect(unpaddedPane1.padding, const EdgeInsets.fromLTRB(10, 10, 0, 10));
+    expect(unpaddedPane1.viewPadding, const EdgeInsets.fromLTRB(10, 10, 0, 10));
+    expect(unpaddedPane1.viewInsets, const EdgeInsets.fromLTRB(10, 10, 0, 10));
+    expect(unpaddedPane2.padding, const EdgeInsets.fromLTRB(0, 10, 10, 10));
+    expect(unpaddedPane2.viewPadding, const EdgeInsets.fromLTRB(0, 10, 10, 10));
+    expect(unpaddedPane2.viewInsets, const EdgeInsets.fromLTRB(0, 10, 10, 10));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
   testWidgets('TwoPane separating display feature - LTR', (WidgetTester tester) async {
     OrderPainter.log.clear();
     const Key twoPaneKey = Key('twoPane');
@@ -850,6 +892,48 @@ void main() {
     expect(OrderPainter.log, <int>[1, 2]);
   });
 
+  testWidgets('TwoPane removes MediaQuery paddings and insets - RTL', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+      padding: const EdgeInsets.all(10),
+      viewPadding: const EdgeInsets.all(10),
+      viewInsets: const EdgeInsets.all(10),
+    );
+
+    late MediaQueryData unpaddedPane1;
+    late MediaQueryData unpaddedPane2;
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        textDirection: TextDirection.rtl,
+        startPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane1 = MediaQuery.of(context);
+            return log(1);
+          },
+        ),
+        endPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane2 = MediaQuery.of(context);
+            return log(2);
+          },
+        ),
+      ),
+    ));
+
+    expect(unpaddedPane1.padding, const EdgeInsets.fromLTRB(0, 10, 10, 10));
+    expect(unpaddedPane1.viewPadding, const EdgeInsets.fromLTRB(0, 10, 10, 10));
+    expect(unpaddedPane1.viewInsets, const EdgeInsets.fromLTRB(0, 10, 10, 10));
+    expect(unpaddedPane2.padding, const EdgeInsets.fromLTRB(10, 10, 0, 10));
+    expect(unpaddedPane2.viewPadding, const EdgeInsets.fromLTRB(10, 10, 0, 10));
+    expect(unpaddedPane2.viewInsets, const EdgeInsets.fromLTRB(10, 10, 0, 10));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
   testWidgets('TwoPane separating display feature - RTL', (WidgetTester tester) async {
     OrderPainter.log.clear();
     const Key twoPaneKey = Key('twoPane');
@@ -1040,6 +1124,49 @@ void main() {
     expect(renderBox.size.height, equals(450.0));
     boxParentData = renderBox.parentData! as BoxParentData;
     expect(boxParentData.offset.dy, equals(150.0));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
+  testWidgets('TwoPane removes MediaQuery paddings and insets - down', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+      padding: const EdgeInsets.all(10),
+      viewPadding: const EdgeInsets.all(10),
+      viewInsets: const EdgeInsets.all(10),
+    );
+
+    late MediaQueryData unpaddedPane1;
+    late MediaQueryData unpaddedPane2;
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        direction: Axis.vertical,
+        textDirection: TextDirection.ltr,
+        startPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane1 = MediaQuery.of(context);
+            return log(1);
+          },
+        ),
+        endPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane2 = MediaQuery.of(context);
+            return log(2);
+          },
+        ),
+      ),
+    ));
+
+    expect(unpaddedPane1.padding, const EdgeInsets.fromLTRB(10, 10, 10, 0));
+    expect(unpaddedPane1.viewPadding, const EdgeInsets.fromLTRB(10, 10, 10, 0));
+    expect(unpaddedPane1.viewInsets, const EdgeInsets.fromLTRB(10, 10, 10, 0));
+    expect(unpaddedPane2.padding, const EdgeInsets.fromLTRB(10, 0, 10, 10));
+    expect(unpaddedPane2.viewPadding, const EdgeInsets.fromLTRB(10, 0, 10, 10));
+    expect(unpaddedPane2.viewInsets, const EdgeInsets.fromLTRB(10, 0, 10, 10));
 
     expect(OrderPainter.log, <int>[1, 2]);
   });
@@ -1238,6 +1365,50 @@ void main() {
     expect(renderBox.size.height, equals(450.0));
     boxParentData = renderBox.parentData! as BoxParentData;
     expect(boxParentData.offset.dy, equals(0.0));
+
+    expect(OrderPainter.log, <int>[1, 2]);
+  });
+
+  testWidgets('TwoPane removes MediaQuery paddings and insets - up', (WidgetTester tester) async {
+    OrderPainter.log.clear();
+    const Key twoPaneKey = Key('twoPane');
+    // A 20 pixel-wide vertical display feature splitting the display left-right
+    final MediaQueryData mediaQuery = MediaQueryData.fromWindow(WidgetsBinding.instance.window).copyWith(
+      padding: const EdgeInsets.all(10),
+      viewPadding: const EdgeInsets.all(10),
+      viewInsets: const EdgeInsets.all(10),
+    );
+
+    late MediaQueryData unpaddedPane1;
+    late MediaQueryData unpaddedPane2;
+    await tester.pumpWidget(MediaQuery(
+      data: mediaQuery,
+      child: TwoPane(
+        key: twoPaneKey,
+        direction: Axis.vertical,
+        textDirection: TextDirection.ltr,
+        verticalDirection: VerticalDirection.up,
+        startPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane1 = MediaQuery.of(context);
+            return log(1);
+          },
+        ),
+        endPane: Builder(
+          builder: (BuildContext context) {
+            unpaddedPane2 = MediaQuery.of(context);
+            return log(2);
+          },
+        ),
+      ),
+    ));
+
+    expect(unpaddedPane1.padding, const EdgeInsets.fromLTRB(10, 0, 10, 10));
+    expect(unpaddedPane1.viewPadding, const EdgeInsets.fromLTRB(10, 0, 10, 10));
+    expect(unpaddedPane1.viewInsets, const EdgeInsets.fromLTRB(10, 0, 10, 10));
+    expect(unpaddedPane2.padding, const EdgeInsets.fromLTRB(10, 10, 10, 0));
+    expect(unpaddedPane2.viewPadding, const EdgeInsets.fromLTRB(10, 10, 10, 0));
+    expect(unpaddedPane2.viewInsets, const EdgeInsets.fromLTRB(10, 10, 10, 0));
 
     expect(OrderPainter.log, <int>[1, 2]);
   });
