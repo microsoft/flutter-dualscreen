@@ -1,3 +1,7 @@
+## 1.0.4
+
+* Updated AGP to 7 and kotlin to 1.7
+
 ## 1.0.3
 
 * TwoPane no longer removes display features from child panes. This allows child panes to know if the device has display features.
