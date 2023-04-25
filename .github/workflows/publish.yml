@@ -14,6 +14,31 @@ on:
 # Publish using the reusable workflow from dart-lang.
 jobs:
   publish:
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-    # with:
-    #   working-directory: path/to/package/within/repository
+    name: Publish on pub.dev
+    runs-on: ubuntu-latest
+    outputs:
+      changelog_url: ${{ steps.pub_release.outputs.changelog_url }}
+
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      # This action adds a token needed for pub.dev
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Publish to pub.dev
+        id: pub_release
+        uses: leancodepl/mobile-tools/.github/actions/pub-release@pub-release-v1
