@@ -51,7 +51,7 @@ Widget build(BuildContext context) {
     startPane: _widgetA(),
     endPane: _widgetB(),
     paneProportion: 0.3,
-    panePriority: MediaQuery.of(context).size.width > 500 ? TwoPanePriority.both :TwoPanePriority.pane1,
+    panePriority: MediaQuery.of(context).size.width > 500 ? TwoPanePriority.both : TwoPanePriority.first,
   );
 }
 ```
