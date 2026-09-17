@@ -1,3 +1,8 @@
+## 1.0.5
+* Forked from Microsoft's dual_screen project
+* Updated to latest Android, AGP, and Kotlin versions to support newer versions of Flutter
+* Re-published on pub.dev as split_screen
+
 ## 1.0.4
 
 * Updated AGP to 7 and kotlin to 1.7

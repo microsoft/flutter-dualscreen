@@ -1,4 +1,4 @@
-library dual_screen;
+library split_screen;
 
 export 'src/dual_screen_info.dart';
 export 'src/two_pane.dart';

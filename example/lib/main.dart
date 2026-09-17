@@ -2,7 +2,7 @@
 /// Licensed under the MIT License.
 
 import 'package:flutter/material.dart';
-import 'package:dual_screen/dual_screen.dart';
+import 'package:split_screen/split_screen.dart';
 
 void main() {
   runApp(MyApp());

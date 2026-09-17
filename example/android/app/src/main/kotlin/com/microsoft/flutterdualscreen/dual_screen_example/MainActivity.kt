@@ -1,4 +1,4 @@
-package com.microsoft.flutterdualscreen.dual_screen_example
+package com.microsoft.flutterdualscreen.split_screen_example
 
 import io.flutter.embedding.android.FlutterActivity
 

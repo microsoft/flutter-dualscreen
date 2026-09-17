@@ -16,7 +16,7 @@ private const val HINGE_ANGLE_CHANNEL_NAME = "com.microsoft.flutterdualscreen/hi
 private const val HINGE_INFO_CHANNEL_NAME = "com.microsoft.flutterdualscreen/hinge_info"
 
 /**
- * Manages dual_screen event and method call channels (creates, registers, unregisters).
+ * Manages split_screen event and method call channels (creates, registers, unregisters).
  *
  * The two channels it manages:
  *  - Hinge angle: Event channel that emits a new double value for each hinge sensor angle change.

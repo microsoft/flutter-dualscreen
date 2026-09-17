@@ -1,7 +1,7 @@
 /// Copyright (c) Microsoft Corporation.
 /// Licensed under the MIT License.
 
-import 'package:dual_screen/dual_screen.dart';
+import 'package:split_screen/split_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:dual_screen_example/main.dart';
+import 'package:split_screen_example/main.dart';
 
 void main() {
   const EventChannel hingeAngleChannel =

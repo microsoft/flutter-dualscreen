@@ -3,7 +3,7 @@
 
 import 'dart:ui';
 
-import 'package:dual_screen/dual_screen.dart';
+import 'package:split_screen/split_screen.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';

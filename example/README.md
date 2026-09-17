@@ -1,6 +1,6 @@
-# dual_screen_example
+# split_screen_example
 
-Demonstrates how to use the dual_screen plugin.
+Demonstrates how to use the split_screen plugin.
 
 ## Getting Started
 

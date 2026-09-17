@@ -1,4 +1,7 @@
-# Flutter Dual Screen
+# Flutter Split Screen
+
+**note**
+This project has been forked from the Microsoft DualScreen project in order to keep it up to date with the latest Flutter / Android requirements. The information below is otherwise unchanged, unless necessary.
 
 This contains Microsoft's offerings to streamline foldable and dual-screen development using Flutter. This plugin will work on any platform, but only Android actually has foldable and dual screen devices.
 
@@ -73,9 +76,9 @@ Foldable and dual-screen devices have a hinge between the two moving parts of th
 
 ## Hinge angle API
 
-To use this plugin, add `dual_screen` as a dependency in your pubspec.yaml file.
+To use this plugin, add `split_screen` as a dependency in your pubspec.yaml file.
 
-This will allow you to import DualScreenInfo `import 'package:dual_screen/dual_screen.dart';`
+This will allow you to import DualScreenInfo `import 'package:split_screen/split_screen.dart';`
 
 DualScreenInfo exposes 2 static properties:
 
@@ -85,7 +88,7 @@ DualScreenInfo exposes 2 static properties:
 ## Hinge angle example
 
 ```dart
-import 'package:dual_screen/dual_screen.dart';
+import 'package:split_screen/split_screen.dart';
 
 DualScreenInfo.hingeAngleEvents.listen((double hingeAngle) {
   print(hingeAngle);
@@ -128,4 +131,4 @@ Any use of third-party trademarks or logos are subject to those third-party's po
 
 <!-- ## Special thanks -->
 
-<!-- The [dual_screen](https://pub.dev/packages/dual_screen) package was previously owned by [Built to Roam](https://pub.dev/publishers/builttoroam.com/) and it initially offered a way to know if your app is running on a dual screen device and if it is spanned across both screens or not. We would like to thank [Nick Randolph](https://github.com/nickrandolph), [Michael Bui](https://github.com/MaikuB) and [Brett Lim](https://github.com/Brett09) for transferring ownership of `dual_screen` to Microsoft. -->
+<!-- The [split_screen](https://pub.dev/packages/split_screen) package was previously owned by [Built to Roam](https://pub.dev/publishers/builttoroam.com/) and it initially offered a way to know if your app is running on a dual screen device and if it is spanned across both screens or not. We would like to thank [Nick Randolph](https://github.com/nickrandolph), [Michael Bui](https://github.com/MaikuB) and [Brett Lim](https://github.com/Brett09) for transferring ownership of `split_screen` to Microsoft. -->
